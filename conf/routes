@@ -1,0 +1,5 @@
+GET     /v1/car/all     com.github.fdesu.controller.CarAdvertController.allAdverts
+GET     /v1/car/:id     com.github.fdesu.controller.CarAdvertController.getCarAdvertById(id: Long)
+POST    /v1/car/new     com.github.fdesu.controller.CarAdvertController.addNewAdvert
+PUT     /v1/car/change  com.github.fdesu.controller.CarAdvertController.updateAdvert
+DELETE  /v1/car/:id     com.github.fdesu.controller.CarAdvertController.removeAdvert(id: Long)
