@@ -5,7 +5,7 @@ import java.util.stream.Collectors
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.fdesu.data.model.CarAdvert
 import com.github.fdesu.data.repo.CarAdvertRepo
-import com.github.fdesu.controller.validation.{BadResponse, CarAdvertValidator, ValidationException}
+import com.github.fdesu.controller.validation.{BadResponse, CarAdvertValidator, IdResponse, ValidationException}
 import javax.inject.{Inject, Singleton}
 import javax.persistence.EntityNotFoundException
 import play.api.libs.json.Json
@@ -18,9 +18,9 @@ class CarAdvertController @Inject()(cc: ControllerComponents,
                                     validator: CarAdvertValidator) extends AbstractController(cc) {
 
     def allAdverts(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
-        Ok(Json.toJson(mapper.writeValueAsString(
+        Ok(mapper.writeValueAsString(
             repo.all().collect(Collectors.toList())
-        )))
+        ))
     }
 
     def getCarAdvertById(id: Long): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
@@ -29,7 +29,7 @@ class CarAdvertController @Inject()(cc: ControllerComponents,
         if (advert == null) {
             NotFound
         } else {
-            Ok(Json.toJson(mapper.writeValueAsString(advert)))
+            Ok(mapper.writeValueAsString(advert))
         }
     }
 
@@ -41,7 +41,7 @@ class CarAdvertController @Inject()(cc: ControllerComponents,
             validator validate advert
             repo persist advert
 
-            Ok
+            Ok(mapper.writeValueAsString(new IdResponse(advert.getId)))
         } catch {
             case e: ValidationException =>
                 BadRequest(Json.toJson(mapper.writeValueAsString(

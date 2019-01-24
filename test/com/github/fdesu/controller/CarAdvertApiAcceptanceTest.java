@@ -1,29 +1,18 @@
 package com.github.fdesu.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fdesu.WithDatabaseApplication;
+import com.github.fdesu.controller.validation.IdResponse;
+import com.github.fdesu.data.model.CarAdvert;
 import org.junit.Before;
 import org.junit.Test;
-import play.Application;
 import play.db.DBApi;
-import play.db.Database;
-import play.db.evolutions.Evolution;
-import play.db.evolutions.Evolutions;
 import play.mvc.Result;
-import play.test.WithApplication;
+
+import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static play.mvc.Http.Status.BAD_REQUEST;
-import static play.mvc.Http.Status.CONFLICT;
-import static play.test.Helpers.DELETE;
-import static play.test.Helpers.GET;
-import static play.test.Helpers.NOT_FOUND;
-import static play.test.Helpers.OK;
-import static play.test.Helpers.POST;
-import static play.test.Helpers.PUT;
-import static play.test.Helpers.fakeApplication;
-import static play.test.Helpers.fakeRequest;
-import static play.test.Helpers.inMemoryDatabase;
-import static play.test.Helpers.route;
+import static play.test.Helpers.*;
 
 public class CarAdvertApiAcceptanceTest extends WithDatabaseApplication {
     private static final String EXAMPLE = "{\n" +
@@ -42,10 +31,12 @@ public class CarAdvertApiAcceptanceTest extends WithDatabaseApplication {
         "}";
 
     private DBApi dbApi;
+    private ObjectMapper mapper;
 
     @Before
     public void setUp() {
         dbApi = instanceOf(DBApi.class);
+        mapper = instanceOf(ObjectMapper.class);
     }
 
     @Test
@@ -56,19 +47,22 @@ public class CarAdvertApiAcceptanceTest extends WithDatabaseApplication {
     }
 
     @Test
-    public void shouldRetrieveCarAdvertById() {
+    public void shouldRetrieveCarAdvertById() throws IOException {
         populateDataRow(dbApi, 999L);
 
         Result result = route(app, fakeRequest(GET, "/v1/car/999"));
 
         assertThat(result.status()).isEqualTo(OK);
+        assertDataRow(999L, mapper.readValue(contentAsString(result), CarAdvert.class));
     }
 
     @Test
-    public void shouldReturnAllAdverts() {
+    public void shouldReturnAllAdverts() throws IOException {
+        populateDataRow(dbApi, 999L);
         Result result = route(app, fakeRequest(GET, "/v1/car/all"));
 
         assertThat(result.status()).isEqualTo(OK);
+        assertDataRow(999L, mapper.readValue(contentAsString(result), CarAdvert[].class)[0]);
     }
 
     @Test
@@ -79,10 +73,11 @@ public class CarAdvertApiAcceptanceTest extends WithDatabaseApplication {
     }
 
     @Test
-    public void shouldAddNewAdvert() {
+    public void shouldAddNewAdvert() throws IOException {
         Result result = route(app, fakeRequest(POST, "/v1/car/new").bodyText(NEW));
 
         assertThat(result.status()).isEqualTo(OK);
+        assertThat(mapper.readValue(contentAsString(result), IdResponse.class).getId()).isNotNull();
     }
 
     @Test
@@ -93,7 +88,7 @@ public class CarAdvertApiAcceptanceTest extends WithDatabaseApplication {
     }
 
     @Test
-    public void shouldDeleteAdvert() {
+    public void shouldDeleteAdvert() throws IOException {
         populateDataRow(dbApi, 999L);
 
         Result result = route(app, fakeRequest(DELETE, "/v1/car/999"));

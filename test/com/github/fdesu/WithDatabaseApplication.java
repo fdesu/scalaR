@@ -1,5 +1,7 @@
 package com.github.fdesu;
 
+import com.github.fdesu.data.model.CarAdvert;
+import com.github.fdesu.data.model.Fuel;
 import play.Application;
 import play.db.DBApi;
 import play.db.Database;
@@ -7,6 +9,7 @@ import play.db.evolutions.Evolution;
 import play.db.evolutions.Evolutions;
 import play.test.WithApplication;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static play.test.Helpers.fakeApplication;
 import static play.test.Helpers.inMemoryDatabase;
 
@@ -26,6 +29,14 @@ public class WithDatabaseApplication extends WithApplication {
                 "delete from CAR_ADVERT where ID = " + id + ";"
             ))
         );
+    }
+
+    public void assertDataRow(long id, CarAdvert advert) {
+        assertThat(advert.getId()).isEqualTo(id);
+        assertThat(advert.getTitle()).isEqualTo("A");
+        assertThat(advert.getFuel()).isEqualTo(Fuel.GASOLINE);
+        assertThat(advert.getPrice()).isEqualTo(123);
+        assertThat(advert.isNew()).isTrue();
     }
 
 }

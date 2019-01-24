@@ -1,5 +1,7 @@
 package com.github.fdesu.data.model;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
