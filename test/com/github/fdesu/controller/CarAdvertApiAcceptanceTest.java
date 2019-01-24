@@ -23,8 +23,6 @@ import static play.test.Helpers.inMemoryDatabase;
 import static play.test.Helpers.route;
 
 public class CarAdvertApiAcceptanceTest extends WithApplication {
-
-    private static final String DB_NAME = "test-db";
     private static final String EXAMPLE = "{\n" +
         "  \"id\": 123,\n" +
         "  \"title\": \"TEST_TITLE\",\n" +
@@ -37,17 +35,7 @@ public class CarAdvertApiAcceptanceTest extends WithApplication {
 
     @Before
     public void setUp() {
-        DBApi dbApi = app.injector().instanceOf(DBApi.class);
-        this.dbApi = dbApi;
-
-        Database database = dbApi.getDatabase(DB_NAME);
-        Evolutions.applyEvolutions(database, Evolutions.forDefault(
-            new Evolution(
-                1,
-                "insert into CAR_ADVERT(ID, TITLE, FUEL, PRICE, IS_NEW) VALUES(999, 'A', 'GASOLINE', 123, 1);",
-                "delete from CAR_ADVERT where ID = 999;"
-            ))
-        );
+        dbApi = instanceOf(DBApi.class);
     }
 
     @Test
@@ -59,6 +47,8 @@ public class CarAdvertApiAcceptanceTest extends WithApplication {
 
     @Test
     public void shouldRetrieveCarAdvertById() {
+        populateDataRow(999L);
+
         Result result = route(app, fakeRequest(GET, "/v1/car/999"));
 
         assertThat(result.status()).isEqualTo(OK);
@@ -87,6 +77,8 @@ public class CarAdvertApiAcceptanceTest extends WithApplication {
 
     @Test
     public void shouldDeleteAdvert() {
+        populateDataRow(999L);
+
         Result result = route(app, fakeRequest(DELETE, "/v1/car/999"));
 
         assertThat(result.status()).isEqualTo(OK);
@@ -99,9 +91,20 @@ public class CarAdvertApiAcceptanceTest extends WithApplication {
         assertThat(result.status()).isEqualTo(NOT_FOUND);
     }
 
-
     @Override
     protected Application provideApplication() {
-        return fakeApplication(inMemoryDatabase(DB_NAME));
+        return fakeApplication(inMemoryDatabase());
     }
+
+    private void populateDataRow(long id) {
+        Database database = dbApi.getDatabases().get(0);
+        Evolutions.applyEvolutions(database, Evolutions.forDefault(
+            new Evolution(
+                1,
+                "insert into CAR_ADVERT(ID, TITLE, FUEL, PRICE, ISNEW) VALUES(" + id + ", 'A', 'GASOLINE', 123, 1);",
+                "delete from CAR_ADVERT where ID = " + id + ";"
+            ))
+        );
+    }
+
 }
