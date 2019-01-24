@@ -21,9 +21,9 @@ public class CarAdvert {
     @Enumerated(EnumType.STRING)
     private Fuel fuel;
 
-    private int price;
+    private Integer price;
 
-    private boolean isNew;
+    private Boolean isNew;
 
     private Integer mileage;
 
@@ -53,19 +53,19 @@ public class CarAdvert {
         this.fuel = fuel;
     }
 
-    public int getPrice() {
+    public Integer getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(Integer price) {
         this.price = price;
     }
 
-    public boolean isNew() {
+    public Boolean isNew() {
         return isNew;
     }
 
-    public void setNew(boolean aNew) {
+    public void setNew(Boolean aNew) {
         isNew = aNew;
     }
 
