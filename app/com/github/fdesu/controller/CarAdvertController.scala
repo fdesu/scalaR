@@ -8,6 +8,7 @@ import com.github.fdesu.data.repo.CarAdvertRepo
 import com.github.fdesu.controller.validation.{BadResponse, CarAdvertValidator, IdResponse, ValidationException}
 import javax.inject.{Inject, Singleton}
 import javax.persistence.EntityNotFoundException
+import play.api.Logger
 import play.api.libs.json.Json
 import play.api.mvc._
 
@@ -23,7 +24,9 @@ class CarAdvertController @Inject()(cc: ControllerComponents,
         repo.all().collect(Collectors.toList())
       ))
     } catch {
-      case e: Exception => InternalServerError
+      case e: Exception =>
+        Logger.error("Critical exception during all records export operation", e)
+        InternalServerError
     }
   }
 
@@ -37,7 +40,9 @@ class CarAdvertController @Inject()(cc: ControllerComponents,
         Ok(mapper.writeValueAsString(advert))
       }
     } catch {
-      case e: Exception => InternalServerError
+      case e: Exception =>
+        Logger.error("Critical exception during searching by id", e)
+        InternalServerError
     }
   }
 
@@ -55,7 +60,9 @@ class CarAdvertController @Inject()(cc: ControllerComponents,
         BadRequest(Json.toJson(mapper.writeValueAsString(
           new BadResponse(e.getMessage)
         )))
-      case e: Exception => InternalServerError
+      case e: Exception =>
+        Logger.error("Critical exception during the persist call", e)
+        InternalServerError
     }
   }
 
@@ -66,7 +73,9 @@ class CarAdvertController @Inject()(cc: ControllerComponents,
 
       Ok
     } catch {
-      case e: Exception => InternalServerError
+      case e: Exception =>
+        Logger.error("Critical exception during update", e)
+        InternalServerError
     }
   }
 
@@ -76,6 +85,9 @@ class CarAdvertController @Inject()(cc: ControllerComponents,
       Ok
     } catch {
       case e: EntityNotFoundException => NotFound
+      case e: Exception =>
+        Logger.error("Critical exception during removal", e)
+        InternalServerError
     }
   }
 
