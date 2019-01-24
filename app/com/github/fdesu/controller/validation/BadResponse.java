@@ -1,4 +1,4 @@
-package com.github.fdesu.data.validation;
+package com.github.fdesu.controller.validation;
 
 public class BadResponse {
 
