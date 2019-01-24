@@ -12,6 +12,21 @@ import javax.persistence.Table;
 @Table(name = "CAR_ADVERT")
 public class CarAdvert {
 
+    public CarAdvert() {
+    }
+
+    public CarAdvert(Long id, String title, Fuel fuel,
+                     Integer price, Boolean isNew, Integer mileage,
+                     Date registrationDate) {
+        this.id = id;
+        this.title = title;
+        this.fuel = fuel;
+        this.price = price;
+        this.isNew = isNew;
+        this.mileage = mileage;
+        this.registrationDate = registrationDate;
+    }
+
     @Id
     @GeneratedValue
     private Long id;
