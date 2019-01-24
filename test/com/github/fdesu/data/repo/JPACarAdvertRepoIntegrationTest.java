@@ -1,5 +1,7 @@
 package com.github.fdesu.data.repo;
 
+import java.util.concurrent.ExecutionException;
+
 import com.github.fdesu.data.model.CarAdvert;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +18,7 @@ import static play.test.Helpers.fakeApplication;
 import static play.test.Helpers.inMemoryDatabase;
 
 public class JPACarAdvertRepoIntegrationTest extends WithApplication {
+
     private static final long EXISTENT_ID = 678L;
     private static final String EXAMPLE_TITLE = "updated one";
 
@@ -32,26 +35,26 @@ public class JPACarAdvertRepoIntegrationTest extends WithApplication {
 
     @Test
     public void shouldFindNothingById() {
-        repo.findById(321L).thenAccept(advert -> assertThat(advert).isNull());
+        assertThat(repo.findById(321L)).isNull();
     }
 
     @Test
     public void shouldFindById() {
         populateDataRow(EXISTENT_ID);
 
-        repo.findById(EXISTENT_ID).thenAccept(advert -> assertThat(advert).isNotNull());
+        assertThat(repo.findById(EXISTENT_ID)).isNotNull();
     }
 
     @Test
     public void shouldFindNothingAtAll() {
-        repo.all().thenAccept(adverts -> assertThat(adverts).isEmpty());
+        assertThat(repo.all()).isEmpty();
     }
 
     @Test
-    public void shouldFindSomethingDuringAllCall() {
+    public void shouldFindSomethingDuringAllCall() throws ExecutionException, InterruptedException {
         populateDataRow(1L);
 
-        repo.all().thenAccept(adverts -> assertThat(adverts).isNotEmpty());
+        assertThat(repo.all()).isNotEmpty();
     }
 
     @Test
@@ -69,14 +72,11 @@ public class JPACarAdvertRepoIntegrationTest extends WithApplication {
     public void shouldUpdateEntity() {
         Long id = repo.persist(new CarAdvert());
 
-        repo.findById(id).thenApply(advert -> {
-            advert.setTitle(EXAMPLE_TITLE);
-            return advert;
-        }).thenAccept(advert -> repo.update(advert));
+        CarAdvert advert = repo.findById(id);
+        advert.setTitle(EXAMPLE_TITLE);
+        repo.update(advert);
 
-        jpaApi.withTransaction(() -> {
-            assertThat(jpaApi.em().find(CarAdvert.class, id).getTitle()).isEqualTo(EXAMPLE_TITLE);
-        });
+        jpaApi.withTransaction(() -> assertThat(jpaApi.em().find(CarAdvert.class, id).getTitle()).isEqualTo(EXAMPLE_TITLE));
     }
 
     @Test
