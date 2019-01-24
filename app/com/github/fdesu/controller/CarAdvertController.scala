@@ -36,20 +36,17 @@ class CarAdvertController @Inject()(cc: ControllerComponents,
     def addNewAdvert(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
         val advert = mapper.readValue(request.body.asText.get, classOf[CarAdvert])
 
-        if (advert.getId == null) {
-            try {
-                validator validateWithoutId advert
-                repo persist advert
+        try {
+            advert setId null
+            validator validate advert
+            repo persist advert
 
-                Ok
-            } catch {
-                case e: ValidationException =>
-                    BadRequest(Json.toJson(mapper.writeValueAsString(
-                        new BadResponse(e.getMessage)
-                    )))
-            }
-        } else {
-            BadRequest
+            Ok
+        } catch {
+            case e: ValidationException =>
+                BadRequest(Json.toJson(mapper.writeValueAsString(
+                    new BadResponse(e.getMessage)
+                )))
         }
     }
 

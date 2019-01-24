@@ -24,14 +24,14 @@ public class CarAdvertValidatorTest {
 
     public static CarAdvert[] validationTestData() {
         return new CarAdvert[] {
-            new CarAdvert(null, T, GASOLINE, 0, false, 0, new Date()),
-            new CarAdvert(0L, null, GASOLINE, 0, false, 0, new Date()),
-            new CarAdvert(0L, "      ", GASOLINE, 0, false, 0, new Date()),
-            new CarAdvert(0L, T, null, 0, false, 0, new Date()),
-            new CarAdvert(0L, T, GASOLINE, null, false, 0, new Date()),
-            new CarAdvert(0L, T, GASOLINE, 0, null, 0, new Date()),
-            new CarAdvert(0L, T, GASOLINE, 0, false, null, new Date()),
-            new CarAdvert(0L, T, GASOLINE, 0, false, 0, null)
+            new CarAdvert(222L, T, GASOLINE, 0, false, 0, new Date()),
+            new CarAdvert(null, null, GASOLINE, 0, false, 0, new Date()),
+            new CarAdvert(null, "      ", GASOLINE, 0, false, 0, new Date()),
+            new CarAdvert(null, T, null, 0, false, 0, new Date()),
+            new CarAdvert(null, T, GASOLINE, null, false, 0, new Date()),
+            new CarAdvert(null, T, GASOLINE, 0, null, 0, new Date()),
+            new CarAdvert(null, T, GASOLINE, 0, false, null, new Date()),
+            new CarAdvert(null, T, GASOLINE, 0, false, 0, null)
         };
     }
 

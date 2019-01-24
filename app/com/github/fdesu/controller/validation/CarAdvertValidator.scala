@@ -7,11 +7,8 @@ import javax.inject.Singleton
 class CarAdvertValidator {
 
     def validate(advert: CarAdvert): Unit = {
-        if (advert.getId == null) throw ValidationException("Id property is empty!")
-        validateWithoutId(advert)
-    }
+        if (advert.getId != null) throw ValidationException("Id property should be omitted")
 
-    def validateWithoutId(advert: CarAdvert): Unit = {
         if (advert.getTitle == null || advert.getTitle.trim.isEmpty) throw ValidationException("Title property is empty!")
         if (advert.getFuel == null) throw ValidationException("Fuel property is empty!")
         if (advert.getPrice == null) throw ValidationException("Price property is empty!")

@@ -72,10 +72,10 @@ public class CarAdvertApiAcceptanceTest extends WithDatabaseApplication {
     }
 
     @Test
-    public void shouldFailAddExistent() {
+    public void shouldOmitIdAndAdd() {
         Result result = route(app, fakeRequest(POST, "/v1/car/new").bodyText(EXAMPLE));
 
-        assertThat(result.status()).isEqualTo(BAD_REQUEST);
+        assertThat(result.status()).isEqualTo(OK);
     }
 
     @Test
