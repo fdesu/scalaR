@@ -17,53 +17,66 @@ class CarAdvertController @Inject()(cc: ControllerComponents,
                                     mapper: ObjectMapper,
                                     validator: CarAdvertValidator) extends AbstractController(cc) {
 
-    def allAdverts(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
-        Ok(mapper.writeValueAsString(
-            repo.all().collect(Collectors.toList())
-        ))
+  def allAdverts(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
+    try {
+      Ok(mapper.writeValueAsString(
+        repo.all().collect(Collectors.toList())
+      ))
+    } catch {
+      case e: Exception => InternalServerError
     }
+  }
 
-    def getCarAdvertById(id: Long): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
-        val advert = repo.findById(id)
+  def getCarAdvertById(id: Long): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
+    try {
+      val advert = repo.findById(id)
 
-        if (advert == null) {
-            NotFound
-        } else {
-            Ok(mapper.writeValueAsString(advert))
-        }
+      if (advert == null) {
+        NotFound
+      } else {
+        Ok(mapper.writeValueAsString(advert))
+      }
+    } catch {
+      case e: Exception => InternalServerError
     }
+  }
 
-    def addNewAdvert(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
-        val advert = mapper.readValue(request.body.asText.get, classOf[CarAdvert])
+  def addNewAdvert(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
+    try {
+      val advert = mapper.readValue(request.body.asText.get, classOf[CarAdvert])
 
-        try {
-            advert setId null
-            validator validate advert
-            repo persist advert
+      advert setId null
+      validator validate advert
+      repo persist advert
 
-            Ok(mapper.writeValueAsString(new IdResponse(advert.getId)))
-        } catch {
-            case e: ValidationException =>
-                BadRequest(Json.toJson(mapper.writeValueAsString(
-                    new BadResponse(e.getMessage)
-                )))
-        }
+      Ok(mapper.writeValueAsString(new IdResponse(advert.getId)))
+    } catch {
+      case e: ValidationException =>
+        BadRequest(Json.toJson(mapper.writeValueAsString(
+          new BadResponse(e.getMessage)
+        )))
+      case e: Exception => InternalServerError
     }
+  }
 
-    def updateAdvert(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
-        val advert = mapper.readValue(request.body.asText.get, classOf[CarAdvert])
-        repo update advert
+  def updateAdvert(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
+    try {
+      val advert = mapper.readValue(request.body.asText.get, classOf[CarAdvert])
+      repo update advert
 
-        Ok
+      Ok
+    } catch {
+      case e: Exception => InternalServerError
     }
+  }
 
-    def removeAdvert(id: Long): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
-        try {
-            repo delete id
-            Ok
-        } catch {
-            case e: EntityNotFoundException => NotFound
-        }
+  def removeAdvert(id: Long): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
+    try {
+      repo delete id
+      Ok
+    } catch {
+      case e: EntityNotFoundException => NotFound
     }
+  }
 
 }
