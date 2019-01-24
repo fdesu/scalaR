@@ -1,5 +1,6 @@
 package com.github.fdesu.controller;
 
+import com.github.fdesu.WithDatabaseApplication;
 import org.junit.Before;
 import org.junit.Test;
 import play.Application;
@@ -24,7 +25,7 @@ import static play.test.Helpers.fakeRequest;
 import static play.test.Helpers.inMemoryDatabase;
 import static play.test.Helpers.route;
 
-public class CarAdvertApiAcceptanceTest extends WithApplication {
+public class CarAdvertApiAcceptanceTest extends WithDatabaseApplication {
     private static final String EXAMPLE = "{\n" +
         "  \"id\": 123,\n" +
         "  \"title\": \"TEST_TITLE\",\n" +
@@ -56,7 +57,7 @@ public class CarAdvertApiAcceptanceTest extends WithApplication {
 
     @Test
     public void shouldRetrieveCarAdvertById() {
-        populateDataRow(999L);
+        populateDataRow(dbApi, 999L);
 
         Result result = route(app, fakeRequest(GET, "/v1/car/999"));
 
@@ -93,7 +94,7 @@ public class CarAdvertApiAcceptanceTest extends WithApplication {
 
     @Test
     public void shouldDeleteAdvert() {
-        populateDataRow(999L);
+        populateDataRow(dbApi, 999L);
 
         Result result = route(app, fakeRequest(DELETE, "/v1/car/999"));
 
@@ -105,22 +106,6 @@ public class CarAdvertApiAcceptanceTest extends WithApplication {
         Result result = route(app, fakeRequest(DELETE, "/v1/car/123"));
 
         assertThat(result.status()).isEqualTo(NOT_FOUND);
-    }
-
-    @Override
-    protected Application provideApplication() {
-        return fakeApplication(inMemoryDatabase());
-    }
-
-    private void populateDataRow(long id) {
-        Database database = dbApi.getDatabases().get(0);
-        Evolutions.applyEvolutions(database, Evolutions.forDefault(
-            new Evolution(
-                1,
-                "insert into CAR_ADVERT(ID, TITLE, FUEL, PRICE, ISNEW) VALUES(" + id + ", 'A', 'GASOLINE', 123, 1);",
-                "delete from CAR_ADVERT where ID = " + id + ";"
-            ))
-        );
     }
 
 }

@@ -2,22 +2,16 @@ package com.github.fdesu.data.repo;
 
 import java.util.concurrent.ExecutionException;
 
+import com.github.fdesu.WithDatabaseApplication;
 import com.github.fdesu.data.model.CarAdvert;
 import org.junit.Before;
 import org.junit.Test;
-import play.Application;
 import play.db.DBApi;
-import play.db.Database;
-import play.db.evolutions.Evolution;
-import play.db.evolutions.Evolutions;
 import play.db.jpa.JPAApi;
-import play.test.WithApplication;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static play.test.Helpers.fakeApplication;
-import static play.test.Helpers.inMemoryDatabase;
 
-public class JPACarAdvertRepoIntegrationTest extends WithApplication {
+public class JPACarAdvertRepoIntegrationTest extends WithDatabaseApplication {
 
     private static final long EXISTENT_ID = 678L;
     private static final String EXAMPLE_TITLE = "updated one";
@@ -40,7 +34,7 @@ public class JPACarAdvertRepoIntegrationTest extends WithApplication {
 
     @Test
     public void shouldFindById() {
-        populateDataRow(EXISTENT_ID);
+        populateDataRow(dbApi, EXISTENT_ID);
 
         assertThat(repo.findById(EXISTENT_ID)).isNotNull();
     }
@@ -52,7 +46,7 @@ public class JPACarAdvertRepoIntegrationTest extends WithApplication {
 
     @Test
     public void shouldFindSomethingDuringAllCall() throws ExecutionException, InterruptedException {
-        populateDataRow(1L);
+        populateDataRow(dbApi, 1L);
 
         assertThat(repo.all()).isNotEmpty();
     }
@@ -88,22 +82,6 @@ public class JPACarAdvertRepoIntegrationTest extends WithApplication {
         jpaApi.withTransaction(() -> {
             assertThat(jpaApi.em().find(CarAdvert.class, id)).isNull();
         });
-    }
-
-    @Override
-    protected Application provideApplication() {
-        return fakeApplication(inMemoryDatabase());
-    }
-
-    private void populateDataRow(long id) {
-        Database database = dbApi.getDatabases().get(0);
-        Evolutions.applyEvolutions(database, Evolutions.forDefault(
-            new Evolution(
-                1,
-                "insert into CAR_ADVERT(ID, TITLE, FUEL, PRICE, ISNEW) VALUES(" + id + ", 'A', 'GASOLINE', 123, 1);",
-                "delete from CAR_ADVERT where ID = " + id + ";"
-            ))
-        );
     }
 
 }
