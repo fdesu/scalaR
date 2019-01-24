@@ -5,7 +5,7 @@ import java.util.stream.Collectors
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.fdesu.data.model.CarAdvert
 import com.github.fdesu.data.repo.CarAdvertRepo
-import com.github.fdesu.data.validation.{CarAdvertValidator, ValidationException}
+import com.github.fdesu.data.validation.{BadResponse, CarAdvertValidator, ValidationException}
 import javax.inject.{Inject, Singleton}
 import javax.persistence.EntityNotFoundException
 import play.api.libs.json.Json
@@ -43,7 +43,10 @@ class CarAdvertController @Inject()(cc: ControllerComponents,
 
                 Ok
             } catch {
-                case e: ValidationException => BadRequest(Json.toJson(e.getMessage))
+                case e: ValidationException =>
+                    BadRequest(Json.toJson(mapper.writeValueAsString(
+                        new BadResponse(e.getMessage)
+                    )))
             }
         } else {
             BadRequest
