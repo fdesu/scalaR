@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,6 +18,7 @@ import org.junit.runner.RunWith;
 import play.api.libs.json.JsValue;
 import play.api.libs.json.Json;
 import play.mvc.Result;
+import scala.Option;
 
 import static com.github.fdesu.data.model.Fuel.GASOLINE;
 import static com.github.fdesu.data.model.Fuel.UNKNOWN;
@@ -38,7 +40,6 @@ public class ValidationAcceptanceTest extends WithDatabaseApplication {
         Result result = route(app, fakeRequest(POST, "/v1/car/new").bodyJson(toSend));
 
         assertThat(result.status()).isEqualTo(BAD_REQUEST);
-        assertThat(contentAsString(result)).matches(".+errorMessage.+property is empty!.+");
     }
 
     public static List<JsValue> validationTestData() {
@@ -47,7 +48,9 @@ public class ValidationAcceptanceTest extends WithDatabaseApplication {
             payload("      ", GASOLINE, 0, false, 0, now()),
             payload(T, UNKNOWN, 0, false, 0, now()),
             payload(T, GASOLINE, -123, false, 0, now()),
-            payload(T, GASOLINE, 0, false, -33, now()),
+            payload(T, GASOLINE, 0, false, -33, now())
+
+            // not working as of serialization problems
             //payload(T, GASOLINE, 0, false, 0, null)
         );
     }
