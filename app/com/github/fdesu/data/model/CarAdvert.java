@@ -1,9 +1,9 @@
 package com.github.fdesu.data.model;
 
+import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.util.Date;
 
 @Entity
 public class CarAdvert {

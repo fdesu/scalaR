@@ -11,17 +11,27 @@ import play.mvc.Result;
 import play.test.WithApplication;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static play.test.Helpers.*;
+import static play.test.Helpers.DELETE;
+import static play.test.Helpers.GET;
+import static play.test.Helpers.NOT_FOUND;
+import static play.test.Helpers.OK;
+import static play.test.Helpers.POST;
+import static play.test.Helpers.PUT;
+import static play.test.Helpers.fakeApplication;
+import static play.test.Helpers.fakeRequest;
+import static play.test.Helpers.inMemoryDatabase;
+import static play.test.Helpers.route;
 
 public class CarAdvertApiAcceptanceTest extends WithApplication {
+
     private static final String DB_NAME = "test-db";
     private static final String EXAMPLE = "{\n" +
-            "  \"id\": 123,\n" +
-            "  \"title\": \"TEST_TITLE\",\n" +
-            "  \"fuel\": \"GASOLINE\",\n" +
-            "  \"price\": 7654,\n" +
-            "  \"isNew\": true\n" +
-            "}";
+        "  \"id\": 123,\n" +
+        "  \"title\": \"TEST_TITLE\",\n" +
+        "  \"fuel\": \"GASOLINE\",\n" +
+        "  \"price\": 7654,\n" +
+        "  \"isNew\": true\n" +
+        "}";
 
     private DBApi dbApi;
 
@@ -32,10 +42,11 @@ public class CarAdvertApiAcceptanceTest extends WithApplication {
 
         Database database = dbApi.getDatabase(DB_NAME);
         Evolutions.applyEvolutions(database, Evolutions.forDefault(
-                new Evolution(
-                        1,
-                        "insert into CAR_ADVERT(ID, TITLE, FUEL, PRICE, IS_NEW) VALUES(999, 'A', 'GASOLINE', 123, 1);",
-                        "delete from CAR_ADVERT where ID = 999;"))
+            new Evolution(
+                1,
+                "insert into CAR_ADVERT(ID, TITLE, FUEL, PRICE, IS_NEW) VALUES(999, 'A', 'GASOLINE', 123, 1);",
+                "delete from CAR_ADVERT where ID = 999;"
+            ))
         );
     }
 
