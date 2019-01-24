@@ -1,8 +1,6 @@
 package com.github.fdesu.data.model;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
-import java.util.Date;
+import java.time.LocalDate;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -17,9 +15,9 @@ public class CarAdvert {
     public CarAdvert() {
     }
 
-    public CarAdvert(Long id, String title, Fuel fuel,
-                     Integer price, Boolean isNew, Integer mileage,
-                     Date registrationDate) {
+    public CarAdvert(long id, String title, Fuel fuel,
+                     int price, boolean isNew, int mileage,
+                     LocalDate registrationDate) {
         this.id = id;
         this.title = title;
         this.fuel = fuel;
@@ -31,26 +29,26 @@ public class CarAdvert {
 
     @Id
     @GeneratedValue
-    private Long id;
+    private long id;
 
     private String title;
 
     @Enumerated(EnumType.STRING)
     private Fuel fuel;
 
-    private Integer price;
+    private int price;
 
-    private Boolean isNew;
+    private boolean isNew;
 
-    private Integer mileage;
+    private int mileage;
 
-    private Date registrationDate;
+    private LocalDate registrationDate;
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -70,35 +68,35 @@ public class CarAdvert {
         this.fuel = fuel;
     }
 
-    public Integer getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(Integer price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 
-    public Boolean isNew() {
+    public boolean isNew() {
         return isNew;
     }
 
-    public void setNew(Boolean aNew) {
+    public void setNew(boolean aNew) {
         isNew = aNew;
     }
 
-    public Integer getMileage() {
+    public int getMileage() {
         return mileage;
     }
 
-    public void setMileage(Integer mileage) {
+    public void setMileage(int mileage) {
         this.mileage = mileage;
     }
 
-    public Date getRegistrationDate() {
+    public LocalDate getRegistrationDate() {
         return registrationDate;
     }
 
-    public void setRegistrationDate(Date registrationDate) {
+    public void setRegistrationDate(LocalDate registrationDate) {
         this.registrationDate = registrationDate;
     }
 

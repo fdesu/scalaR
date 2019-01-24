@@ -1,5 +1,6 @@
 package com.github.fdesu.controller;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -13,9 +14,13 @@ import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import play.api.libs.json.JsValue;
+import play.api.libs.json.Json;
 import play.mvc.Result;
 
 import static com.github.fdesu.data.model.Fuel.GASOLINE;
+import static com.github.fdesu.data.model.Fuel.UNKNOWN;
+import static java.time.LocalDate.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static play.mvc.Http.Status.BAD_REQUEST;
 import static play.test.Helpers.POST;
@@ -29,35 +34,30 @@ public class ValidationAcceptanceTest extends WithDatabaseApplication {
 
     @Test
     @Parameters(method = "validationTestData")
-    public void shouldFailAddExistent(String entity) {
-        Result result = route(app, fakeRequest(POST, "/v1/car/new").bodyText(entity));
+    public void shouldFailAddExistent(JsValue toSend) {
+        Result result = route(app, fakeRequest(POST, "/v1/car/new").bodyJson(toSend));
 
         assertThat(result.status()).isEqualTo(BAD_REQUEST);
         assertThat(contentAsString(result)).matches(".+errorMessage.+property is empty!.+");
     }
 
-    public static List<String> validationTestData() {
+    public static List<JsValue> validationTestData() {
         return Arrays.asList(
-            payload(null, null, GASOLINE, 0, false, 0, new Date()),
-            payload(null, "      ", GASOLINE, 0, false, 0, new Date()),
-            payload(null, T, null, 0, false, 0, new Date()),
-            payload(null, T, GASOLINE, null, false, 0, new Date()),
-            payload(null, T, GASOLINE, 0, null, 0, new Date()),
-            payload(null, T, GASOLINE, 0, false, null, new Date()),
-            payload(null, T, GASOLINE, 0, false, 0, null)
+            payload(null, GASOLINE, 0, false, 0, now()),
+            payload("      ", GASOLINE, 0, false, 0, now()),
+            payload(T, UNKNOWN, 0, false, 0, now()),
+            payload(T, GASOLINE, -123, false, 0, now()),
+            payload(T, GASOLINE, 0, false, -33, now()),
+            //payload(T, GASOLINE, 0, false, 0, null)
         );
     }
 
-    public static String payload(Long id, String title, Fuel fuel,
-                                 Integer price, Boolean isNew, Integer mileage,
-                                 Date registrationDate) {
-        try {
-            return new ObjectMapper().writeValueAsString(new CarAdvert(
-                id, title, fuel, price, isNew, mileage, registrationDate
-            ));
-        } catch (JsonProcessingException e) {
-            throw new IllegalStateException(e);
-        }
+    public static JsValue payload(String title, Fuel fuel,
+                                  int price, boolean isNew, int mileage,
+                                  LocalDate registrationDate) {
+        return Json.toJson(new CarAdvertResource(
+                0L, title, fuel, price, isNew, mileage, registrationDate
+        ), CarAdvertResource.implicitWrites());
     }
 
 }

@@ -25,7 +25,7 @@ public class WithDatabaseApplication extends WithApplication {
         Evolutions.applyEvolutions(database, Evolutions.forDefault(
             new Evolution(
                 1,
-                "insert into CAR_ADVERT(ID, TITLE, FUEL, PRICE, ISNEW) VALUES(" + id + ", 'A', 'GASOLINE', 123, 1);",
+                "insert into CAR_ADVERT(ID, TITLE, FUEL, PRICE, ISNEW, MILEAGE) VALUES(" + id + ", 'A', 'GASOLINE', 123, 1, 0);",
                 "delete from CAR_ADVERT where ID = " + id + ";"
             ))
         );

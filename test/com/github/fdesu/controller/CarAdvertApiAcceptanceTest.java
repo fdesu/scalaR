@@ -6,29 +6,23 @@ import com.github.fdesu.controller.validation.IdResponse;
 import com.github.fdesu.data.model.CarAdvert;
 import org.junit.Before;
 import org.junit.Test;
+import play.api.libs.json.JsValue;
+import play.api.libs.json.Json;
 import play.db.DBApi;
 import play.mvc.Result;
 
 import java.io.IOException;
 
+import static com.github.fdesu.data.model.Fuel.GASOLINE;
+import static java.time.LocalDate.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static play.test.Helpers.*;
 
 public class CarAdvertApiAcceptanceTest extends WithDatabaseApplication {
-    private static final String EXAMPLE = "{\n" +
-        "  \"id\": 123,\n" +
-        "  \"title\": \"TEST_TITLE\",\n" +
-        "  \"fuel\": \"GASOLINE\",\n" +
-        "  \"price\": 7654,\n" +
-        "  \"new\": true\n" +
-        "}";
-
-    private static final String NEW = "{\n" +
-        "  \"title\": \"TEST_TITLE\",\n" +
-        "  \"fuel\": \"GASOLINE\",\n" +
-        "  \"price\": 7654,\n" +
-        "  \"new\": true\n" +
-        "}";
+    private static final JsValue EXAMPLE = Json.toJson(new CarAdvertResource(
+            123L, "TEST_TITLE", GASOLINE,
+            7654, true, 0, now()
+    ), CarAdvertResource.implicitWrites());
 
     private DBApi dbApi;
     private ObjectMapper mapper;
@@ -66,15 +60,8 @@ public class CarAdvertApiAcceptanceTest extends WithDatabaseApplication {
     }
 
     @Test
-    public void shouldOmitIdAndAdd() {
-        Result result = route(app, fakeRequest(POST, "/v1/car/new").bodyText(EXAMPLE));
-
-        assertThat(result.status()).isEqualTo(OK);
-    }
-
-    @Test
-    public void shouldAddNewAdvert() throws IOException {
-        Result result = route(app, fakeRequest(POST, "/v1/car/new").bodyText(NEW));
+    public void shouldOmitIdAndAdd() throws IOException {
+        Result result = route(app, fakeRequest(POST, "/v1/car/new").bodyJson(EXAMPLE));
 
         assertThat(result.status()).isEqualTo(OK);
         assertThat(mapper.readValue(contentAsString(result), IdResponse.class).getId()).isNotNull();
@@ -82,7 +69,7 @@ public class CarAdvertApiAcceptanceTest extends WithDatabaseApplication {
 
     @Test
     public void shouldUpdateAdvert() {
-        Result result = route(app, fakeRequest(PUT, "/v1/car/change").bodyText(EXAMPLE));
+        Result result = route(app, fakeRequest(PUT, "/v1/car/change").bodyJson(EXAMPLE));
 
         assertThat(result.status()).isEqualTo(OK);
     }
