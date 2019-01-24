@@ -2,11 +2,14 @@ package com.github.fdesu.data.model;
 
 import java.util.Date;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
+@Table(name = "CAR_ADVERT")
 public class CarAdvert {
 
     @Id
@@ -15,6 +18,7 @@ public class CarAdvert {
 
     private String title;
 
+    @Enumerated(EnumType.STRING)
     private Fuel fuel;
 
     private int price;

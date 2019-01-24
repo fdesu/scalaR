@@ -4,9 +4,10 @@ import java.util.concurrent.CompletionStage
 import java.util.stream
 
 import com.github.fdesu.data.model.CarAdvert
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import play.db.jpa.JPAApi
 
+@Singleton
 class JPACarAdvertRepo @Inject()(jpaApi: JPAApi) extends CarAdvertRepo {
 
     override def findById(id: java.lang.Long): CompletionStage[CarAdvert] = {
@@ -26,7 +27,8 @@ class JPACarAdvertRepo @Inject()(jpaApi: JPAApi) extends CarAdvertRepo {
     }
 
     override def delete(id: java.lang.Long): Unit = {
-        null
     }
+
+
 
 }
