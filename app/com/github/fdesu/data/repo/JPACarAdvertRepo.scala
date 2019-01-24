@@ -1,6 +1,5 @@
 package com.github.fdesu.data.repo
 
-import java.lang
 import java.util.concurrent.CompletionStage
 import java.util.stream
 
@@ -10,7 +9,7 @@ import play.db.jpa.JPAApi
 
 class JPACarAdvertRepo @Inject()(jpaApi: JPAApi) extends CarAdvertRepo {
 
-    override def findById(id: lang.Long): CompletionStage[CarAdvert] = {
+    override def findById(id: java.lang.Long): CompletionStage[CarAdvert] = {
         null
     }
 
@@ -18,15 +17,15 @@ class JPACarAdvertRepo @Inject()(jpaApi: JPAApi) extends CarAdvertRepo {
         null
     }
 
-    override def persist(entity: CarAdvert): Unit = {
+    override def persist(entity: CarAdvert): java.lang.Long = {
         null
     }
 
-    override def update(entity: CarAdvert): CarAdvert = {
+    override def update(entity: CarAdvert): CompletionStage[CarAdvert] = {
         null
     }
 
-    override def delete(id: lang.Long): Unit = {
+    override def delete(id: java.lang.Long): Unit = {
         null
     }
 

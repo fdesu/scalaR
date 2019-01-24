@@ -10,9 +10,9 @@ public interface CrudRepo<T, I> {
 
     CompletionStage<Stream<T>> all();
 
-    void persist(T entity);
+    I persist(T entity);
 
-    T update(T entity);
+    CompletionStage<T> update(T entity);
 
     void delete(I id);
 
