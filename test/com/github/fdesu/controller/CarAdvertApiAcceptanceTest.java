@@ -31,14 +31,14 @@ public class CarAdvertApiAcceptanceTest extends WithDatabaseApplication {
         "  \"title\": \"TEST_TITLE\",\n" +
         "  \"fuel\": \"GASOLINE\",\n" +
         "  \"price\": 7654,\n" +
-        "  \"isNew\": true\n" +
+        "  \"new\": true\n" +
         "}";
 
     private static final String NEW = "{\n" +
         "  \"title\": \"TEST_TITLE\",\n" +
         "  \"fuel\": \"GASOLINE\",\n" +
         "  \"price\": 7654,\n" +
-        "  \"isNew\": true\n" +
+        "  \"new\": true\n" +
         "}";
 
     private DBApi dbApi;
