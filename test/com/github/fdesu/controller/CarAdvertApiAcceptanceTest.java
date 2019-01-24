@@ -11,6 +11,8 @@ import play.mvc.Result;
 import play.test.WithApplication;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static play.mvc.Http.Status.BAD_REQUEST;
+import static play.mvc.Http.Status.CONFLICT;
 import static play.test.Helpers.DELETE;
 import static play.test.Helpers.GET;
 import static play.test.Helpers.NOT_FOUND;
@@ -25,6 +27,13 @@ import static play.test.Helpers.route;
 public class CarAdvertApiAcceptanceTest extends WithApplication {
     private static final String EXAMPLE = "{\n" +
         "  \"id\": 123,\n" +
+        "  \"title\": \"TEST_TITLE\",\n" +
+        "  \"fuel\": \"GASOLINE\",\n" +
+        "  \"price\": 7654,\n" +
+        "  \"isNew\": true\n" +
+        "}";
+
+    private static final String NEW = "{\n" +
         "  \"title\": \"TEST_TITLE\",\n" +
         "  \"fuel\": \"GASOLINE\",\n" +
         "  \"price\": 7654,\n" +
@@ -62,8 +71,15 @@ public class CarAdvertApiAcceptanceTest extends WithApplication {
     }
 
     @Test
-    public void shouldAddNewAdvert() {
+    public void shouldFailAddExistent() {
         Result result = route(app, fakeRequest(POST, "/v1/car/new").bodyText(EXAMPLE));
+
+        assertThat(result.status()).isEqualTo(BAD_REQUEST);
+    }
+
+    @Test
+    public void shouldAddNewAdvert() {
+        Result result = route(app, fakeRequest(POST, "/v1/car/new").bodyText(NEW));
 
         assertThat(result.status()).isEqualTo(OK);
     }
