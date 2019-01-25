@@ -6,6 +6,10 @@ import com.github.fdesu.data.model.CarAdvert
 import javax.inject.{Inject, Singleton}
 import play.db.jpa.JPAApi
 
+/**
+  * Simple JPA implementation of the [[com.github.fdesu.data.repo.CarAdvertRepo]]
+  * @param jpaApi JPA api to use
+  */
 @Singleton
 class JPACarAdvertRepo @Inject()(jpaApi: JPAApi) extends CarAdvertRepo {
 
@@ -17,7 +21,7 @@ class JPACarAdvertRepo @Inject()(jpaApi: JPAApi) extends CarAdvertRepo {
         })
     }
 
-    override def all(): stream.Stream[CarAdvert] = {
+    override def all: stream.Stream[CarAdvert] = {
         jpaApi.withTransaction(() => {
             val query = jpaApi.em().getCriteriaBuilder.createQuery(entityClass)
             val root = query from entityClass

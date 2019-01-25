@@ -6,6 +6,10 @@ import com.github.fdesu.data.model.{CarAdvert, Fuel}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
+/**
+  * Mapping from Scala Json's infra [[com.github.fdesu.controller.CarAdvertResource]]
+  * to JPA [[com.github.fdesu.data.model.CarAdvert]] entity
+  */
 case class CarAdvertResource(id: Long, title: String, fuel: Fuel,
                              price: Int, isNew: Boolean, mileage: Int,
                              registrationDate: LocalDate) {

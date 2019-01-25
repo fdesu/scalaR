@@ -8,6 +8,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * Persistent JPA entity that conveys Car Advert model to the database layer
+ */
 @Entity
 @Table(name = "CAR_ADVERT")
 public class CarAdvert {

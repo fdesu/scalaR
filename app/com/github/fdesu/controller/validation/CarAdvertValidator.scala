@@ -3,6 +3,10 @@ package com.github.fdesu.controller.validation
 import com.github.fdesu.data.model.{CarAdvert, Fuel}
 import javax.inject.Singleton
 
+/**
+  * Simple programmatic validator that verifies
+  * [[com.github.fdesu.data.model.CarAdvert]] fields comply
+  */
 @Singleton
 class CarAdvertValidator {
 
