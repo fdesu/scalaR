@@ -24,9 +24,9 @@ public class JPACarAdvertRepoTest {
     public void setUpMocks() {
         when(jpaApi.em()).thenReturn(em);
 
-        doAnswer(args ->
-            ((Supplier<CarAdvert>)args.getArgument(0)).get()
-        ).when(jpaApi).withTransaction(any(Supplier.class));
+        // execute JPAApi#withTransaction's Supplier
+        doAnswer(args -> ((Supplier<CarAdvert>)args.getArgument(0)).get())
+            .when(jpaApi).withTransaction(any(Supplier.class));
     }
 
     @Test

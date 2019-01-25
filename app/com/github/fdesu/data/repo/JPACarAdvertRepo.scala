@@ -13,7 +13,7 @@ import play.db.jpa.JPAApi
 @Singleton
 class JPACarAdvertRepo @Inject()(jpaApi: JPAApi) extends CarAdvertRepo {
 
-    val entityClass: Class[CarAdvert] = classOf[CarAdvert]
+    private val entityClass: Class[CarAdvert] = classOf[CarAdvert]
 
     override def findById(id: Long): CarAdvert = {
         jpaApi.withTransaction(() => {
@@ -26,7 +26,7 @@ class JPACarAdvertRepo @Inject()(jpaApi: JPAApi) extends CarAdvertRepo {
             val query = jpaApi.em().getCriteriaBuilder.createQuery(entityClass)
             val root = query from entityClass
 
-            jpaApi.em().createQuery(query.select(root)).getResultList.stream()
+            jpaApi.em().createQuery(query select root).getResultList.stream()
         })
     }
 

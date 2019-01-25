@@ -45,7 +45,7 @@ public class JPACarAdvertRepoIntegrationTest extends WithDatabaseApplication {
     }
 
     @Test
-    public void shouldFindSomethingDuringAllCall() throws ExecutionException, InterruptedException {
+    public void shouldFindSomethingDuringAllCall() {
         populateDataRow(dbApi, 1L);
 
         assertThat(repo.all()).isNotEmpty();
@@ -57,9 +57,7 @@ public class JPACarAdvertRepoIntegrationTest extends WithDatabaseApplication {
 
         Long id = (Long)repo.persist(carAdvert);
 
-        jpaApi.withTransaction(() -> {
-            assertThat(jpaApi.em().find(CarAdvert.class, id)).isNotNull();
-        });
+        jpaApi.withTransaction(() -> assertThat(jpaApi.em().find(CarAdvert.class, id)).isNotNull());
     }
 
     @Test
@@ -79,9 +77,7 @@ public class JPACarAdvertRepoIntegrationTest extends WithDatabaseApplication {
 
         repo.delete(id);
 
-        jpaApi.withTransaction(() -> {
-            assertThat(jpaApi.em().find(CarAdvert.class, id)).isNull();
-        });
+        jpaApi.withTransaction(() -> assertThat(jpaApi.em().find(CarAdvert.class, id)).isNull());
     }
 
 }

@@ -29,9 +29,7 @@ class CarAdvertController @Inject()(cc: ControllerComponents,
       * @return all car advert instances
       */
     def allAdverts(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
-        Ok(mapper.writeValueAsString(
-            repo.all.collect(Collectors.toList())
-        ))
+        Ok(mapper writeValueAsString repo.all.collect(Collectors.toList()))
     }
 
     /**
@@ -40,12 +38,12 @@ class CarAdvertController @Inject()(cc: ControllerComponents,
       * @return single car advert
       */
     def getCarAdvertById(id: Long): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
-        val advert = repo.findById(id)
+        val advert = repo findById id
 
         if (advert == null) {
             NotFound
         } else {
-            Ok(Json.toJson(CarAdvertResource.fromAdvert(advert)))
+            Ok(Json.toJson(CarAdvertResource fromAdvert advert))
         }
     }
 
@@ -69,7 +67,7 @@ class CarAdvertController @Inject()(cc: ControllerComponents,
 
     private def handleNewAdvert(advertResource: CarAdvertResource): Result = {
         try {
-            val advert = CarAdvertResource.toAdvert(advertResource)
+            val advert = CarAdvertResource toAdvert advertResource
 
             validator validate advert
             repo persist advert
