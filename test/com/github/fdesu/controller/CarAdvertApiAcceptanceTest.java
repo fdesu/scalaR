@@ -15,6 +15,7 @@ import java.io.IOException;
 import static com.github.fdesu.data.model.Fuel.GASOLINE;
 import static java.time.LocalDate.now;
 import static org.assertj.core.api.Assertions.assertThat;
+import static play.mvc.Http.MimeTypes.JSON;
 import static play.test.Helpers.*;
 
 public class CarAdvertApiAcceptanceTest extends WithDatabaseApplication {
@@ -46,6 +47,7 @@ public class CarAdvertApiAcceptanceTest extends WithDatabaseApplication {
         Result result = route(app, fakeRequest(GET, "/v1/car/999"));
 
         assertThat(result.status()).isEqualTo(OK);
+        assertThat(result.contentType()).hasValue(JSON);
         assertDataRow(999L, mapper.readValue(contentAsString(result), CarAdvert.class));
     }
 
@@ -55,14 +57,16 @@ public class CarAdvertApiAcceptanceTest extends WithDatabaseApplication {
         Result result = route(app, fakeRequest(GET, "/v1/car/all"));
 
         assertThat(result.status()).isEqualTo(OK);
+        assertThat(result.contentType()).hasValue(JSON);
         assertDataRow(999L, mapper.readValue(contentAsString(result), CarAdvert[].class)[0]);
     }
 
     @Test
-    public void shouldOmitIdAndAdd() throws IOException {
+    public void shouldOmitIdAndAdd() {
         Result result = route(app, fakeRequest(POST, "/v1/car/new").bodyJson(EXAMPLE));
 
         assertThat(result.status()).isEqualTo(OK);
+        assertThat(result.contentType()).hasValue(JSON);
         assertThat(contentAsString(result)).matches(".*id.*\\d+.*");
     }
 
@@ -71,15 +75,17 @@ public class CarAdvertApiAcceptanceTest extends WithDatabaseApplication {
         Result result = route(app, fakeRequest(PUT, "/v1/car/change").bodyJson(EXAMPLE));
 
         assertThat(result.status()).isEqualTo(OK);
+        assertThat(result.contentType()).hasValue(JSON);
     }
 
     @Test
-    public void shouldDeleteAdvert() throws IOException {
+    public void shouldDeleteAdvert() {
         populateDataRow(dbApi, 999L);
 
         Result result = route(app, fakeRequest(DELETE, "/v1/car/999"));
 
         assertThat(result.status()).isEqualTo(OK);
+        assertThat(result.contentType()).hasValue(JSON);
     }
 
     @Test

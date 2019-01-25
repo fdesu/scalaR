@@ -47,7 +47,7 @@ class CarAdvertController @Inject()(cc: ControllerComponents,
         if (advert == null) {
             NotFound
         } else {
-            Ok(Json.toJson(CarAdvertResource fromAdvert advert))
+            Ok(Json toJson (CarAdvertResource fromAdvert advert))
         }
     }
 
@@ -76,7 +76,7 @@ class CarAdvertController @Inject()(cc: ControllerComponents,
             validator validate advert
             repo persist advert
 
-            Ok(Json.toJson(IdResponse(advert.getId)))
+            Ok(Json toJson IdResponse(advert.getId))
         } catch {
             case e: ValidationException => BadRequest(Json.toJson(BadResponse(e.getMessage)))
         }
@@ -94,7 +94,7 @@ class CarAdvertController @Inject()(cc: ControllerComponents,
                 json match {
                     case JsSuccess(advertResource: CarAdvertResource, path: JsPath) =>
                         repo update CarAdvertResource.toAdvert(advertResource)
-                        Ok
+                        Ok as JSON
 
                     case e: JsError => BadRequest("Request validation error occurred")
                 }
@@ -111,7 +111,7 @@ class CarAdvertController @Inject()(cc: ControllerComponents,
     def removeAdvert(id: Long): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
         try {
             repo delete id
-            Ok
+            Ok as JSON
         } catch {
             case e: EntityNotFoundException => NotFound
         }
