@@ -36,7 +36,7 @@ class CarAdvertController @Inject()(cc: ControllerComponents,
       if (advert == null) {
         NotFound
       } else {
-        Ok(mapper.writeValueAsString(advert))
+        Ok(Json.toJson(CarAdvertResource.fromAdvert(advert)))
       }
     } catch {
       case e: Exception =>
