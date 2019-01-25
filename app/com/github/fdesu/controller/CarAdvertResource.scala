@@ -49,3 +49,18 @@ object CarAdvertResource {
   }
 
 }
+
+case class IdResponse(id: Long) {}
+object IdResponse {
+  implicit val implicitWrites: Writes[IdResponse] = Json.writes[IdResponse]
+  implicit val implicitReads: Reads[IdResponse] = Json.reads[IdResponse]
+}
+
+case class BadResponse(msg: String) {}
+object BadResponse {
+  implicit val implicitWrites: Writes[BadResponse] = Json.writes[BadResponse]
+  implicit val implicitReads: Reads[BadResponse] = Json.reads[BadResponse]
+}
+
+
+

@@ -2,7 +2,6 @@ package com.github.fdesu.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fdesu.WithDatabaseApplication;
-import com.github.fdesu.controller.validation.IdResponse;
 import com.github.fdesu.data.model.CarAdvert;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,7 +63,7 @@ public class CarAdvertApiAcceptanceTest extends WithDatabaseApplication {
         Result result = route(app, fakeRequest(POST, "/v1/car/new").bodyJson(EXAMPLE));
 
         assertThat(result.status()).isEqualTo(OK);
-        assertThat(mapper.readValue(contentAsString(result), IdResponse.class).getId()).isNotNull();
+        assertThat(contentAsString(result)).matches(".*id.*\\d+.*");
     }
 
     @Test

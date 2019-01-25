@@ -4,7 +4,7 @@ import java.util.stream.Collectors
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.fdesu.data.repo.CarAdvertRepo
-import com.github.fdesu.controller.validation.{BadResponse, CarAdvertValidator, IdResponse, ValidationException}
+import com.github.fdesu.controller.validation.{CarAdvertValidator, ValidationException}
 import javax.inject.{Inject, Singleton}
 import javax.persistence.EntityNotFoundException
 import play.api.Logger
@@ -71,11 +71,11 @@ class CarAdvertController @Inject()(cc: ControllerComponents,
       validator validate advert
       repo persist advert
 
-      Ok(mapper.writeValueAsString(new IdResponse(advert.getId)))
+      Ok(Json.toJson(IdResponse(advert.getId)))
     } catch {
       case e: ValidationException =>
         BadRequest(Json.toJson(mapper.writeValueAsString(
-          new BadResponse(e.getMessage)
+          Json.toJson(BadResponse(e.getMessage))
         )))
       case e: Exception =>
         Logger.error("Critical exception during the persist call", e)
