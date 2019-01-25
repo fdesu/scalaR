@@ -1,14 +1,13 @@
 package com.github.fdesu.controller
 
-import java.util.stream.Collectors
-
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.fdesu.controller.validation.{CarAdvertValidator, ValidationException}
 import com.github.fdesu.data.repo.CarAdvertRepo
 import javax.inject.{Inject, Singleton}
 import javax.persistence.EntityNotFoundException
 import play.api.libs.json._
 import play.api.mvc.{Action, _}
+
+import scala.collection.JavaConverters._
 
 /**
   * Controller that serves /&lt;api_version&gt;/car/ REST requests
@@ -21,7 +20,6 @@ import play.api.mvc.{Action, _}
 @Singleton
 class CarAdvertController @Inject()(cc: ControllerComponents,
                                     repo: CarAdvertRepo,
-                                    mapper: ObjectMapper,
                                     validator: CarAdvertValidator) extends AbstractController(cc) {
 
     /**
@@ -29,7 +27,13 @@ class CarAdvertController @Inject()(cc: ControllerComponents,
       * @return all car advert instances
       */
     def allAdverts(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
-        Ok(mapper writeValueAsString repo.all.collect(Collectors.toList()))
+        val list: List[CarAdvertResource] = repo.all
+            .iterator()
+            .asScala
+            .map(adv => CarAdvertResource.fromAdvert(adv))
+            .toList
+
+        Ok(Json toJson list)
     }
 
     /**
