@@ -7,7 +7,6 @@ import com.github.fdesu.controller.validation.{CarAdvertValidator, ValidationExc
 import com.github.fdesu.data.repo.CarAdvertRepo
 import javax.inject.{Inject, Singleton}
 import javax.persistence.EntityNotFoundException
-import play.api.Logger
 import play.api.libs.json._
 import play.api.mvc.{Action, _}
 
@@ -18,49 +17,31 @@ class CarAdvertController @Inject()(cc: ControllerComponents,
                                     validator: CarAdvertValidator) extends AbstractController(cc) {
 
     def allAdverts(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
-        try {
-            Ok(mapper.writeValueAsString(
-                repo.all.collect(Collectors.toList())
-            ))
-        } catch {
-            case e: Exception =>
-                Logger.error("Critical exception during all records export operation", e)
-                InternalServerError
-        }
+        Ok(mapper.writeValueAsString(
+            repo.all.collect(Collectors.toList())
+        ))
     }
 
     def getCarAdvertById(id: Long): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
-        try {
-            val advert = repo.findById(id)
+        val advert = repo.findById(id)
 
-            if (advert == null) {
-                NotFound
-            } else {
-                Ok(Json.toJson(CarAdvertResource.fromAdvert(advert)))
-            }
-        } catch {
-            case e: Exception =>
-                Logger.error("Critical exception during searching by id", e)
-                InternalServerError
+        if (advert == null) {
+            NotFound
+        } else {
+            Ok(Json.toJson(CarAdvertResource.fromAdvert(advert)))
         }
     }
 
     def addNewAdvert(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
-        try {
-            request.body.asJson.map {
-                mapped =>
-                    val json: JsResult[CarAdvertResource] = Json.fromJson[CarAdvertResource](mapped)
-                    json match {
-                        case JsSuccess(advertResource: CarAdvertResource, path: JsPath) => handleNewAdvert(advertResource)
-                        case e: JsError => BadRequest("Request validation error occurred")
-                    }
-            }.getOrElse {
-                BadRequest("Expecting application/json request body")
-            }
-        } catch {
-            case e: Exception =>
-                Logger.error("Critical exception during searching by id", e)
-                InternalServerError
+        request.body.asJson.map {
+            mapped =>
+                val json: JsResult[CarAdvertResource] = Json.fromJson[CarAdvertResource](mapped)
+                json match {
+                    case JsSuccess(advertResource: CarAdvertResource, path: JsPath) => handleNewAdvert(advertResource)
+                    case e: JsError => BadRequest("Request validation error occurred")
+                }
+        }.getOrElse {
+            BadRequest("Expecting application/json request body")
         }
     }
 
@@ -77,31 +58,22 @@ class CarAdvertController @Inject()(cc: ControllerComponents,
                 BadRequest(Json.toJson(mapper.writeValueAsString(
                     Json.toJson(BadResponse(e.getMessage))
                 )))
-            case e: Exception =>
-                Logger.error("Critical exception during the persist call", e)
-                InternalServerError
         }
     }
 
     def updateAdvert(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
-        try {
-            request.body.asJson.map {
-                mapped =>
-                    val json: JsResult[CarAdvertResource] = Json.fromJson[CarAdvertResource](mapped)
-                    json match {
-                        case JsSuccess(advertResource: CarAdvertResource, path: JsPath) =>
-                            repo update CarAdvertResource.toAdvert(advertResource)
-                            Ok
+        request.body.asJson.map {
+            mapped =>
+                val json: JsResult[CarAdvertResource] = Json.fromJson[CarAdvertResource](mapped)
+                json match {
+                    case JsSuccess(advertResource: CarAdvertResource, path: JsPath) =>
+                        repo update CarAdvertResource.toAdvert(advertResource)
+                        Ok
 
-                        case e: JsError => BadRequest("Request validation error occurred")
-                    }
-            }.getOrElse {
-                BadRequest("Expecting application/json request body")
-            }
-        } catch {
-            case e: Exception =>
-                Logger.error("Critical exception during searching by id", e)
-                InternalServerError
+                    case e: JsError => BadRequest("Request validation error occurred")
+                }
+        }.getOrElse {
+            BadRequest("Expecting application/json request body")
         }
     }
 
@@ -111,9 +83,6 @@ class CarAdvertController @Inject()(cc: ControllerComponents,
             Ok
         } catch {
             case e: EntityNotFoundException => NotFound
-            case e: Exception =>
-                Logger.error("Critical exception during removal", e)
-                InternalServerError
         }
     }
 
