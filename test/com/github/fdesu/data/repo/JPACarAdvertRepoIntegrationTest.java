@@ -55,7 +55,7 @@ public class JPACarAdvertRepoIntegrationTest extends WithDatabaseApplication {
     public void shouldPersistAsIs() {
         CarAdvert carAdvert = new CarAdvert();
 
-        Long id = repo.persist(carAdvert);
+        Long id = (Long)repo.persist(carAdvert);
 
         jpaApi.withTransaction(() -> {
             assertThat(jpaApi.em().find(CarAdvert.class, id)).isNotNull();
@@ -64,7 +64,7 @@ public class JPACarAdvertRepoIntegrationTest extends WithDatabaseApplication {
 
     @Test
     public void shouldUpdateEntity() {
-        Long id = repo.persist(new CarAdvert());
+        Long id = (Long)repo.persist(new CarAdvert());
 
         CarAdvert advert = repo.findById(id);
         advert.setTitle(EXAMPLE_TITLE);
@@ -75,7 +75,7 @@ public class JPACarAdvertRepoIntegrationTest extends WithDatabaseApplication {
 
     @Test
     public void shouldDeleteEntityById() {
-        Long id = repo.persist(new CarAdvert());
+        Long id = (Long)repo.persist(new CarAdvert());
 
         repo.delete(id);
 

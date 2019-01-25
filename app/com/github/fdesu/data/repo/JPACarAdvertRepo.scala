@@ -11,7 +11,7 @@ class JPACarAdvertRepo @Inject()(jpaApi: JPAApi) extends CarAdvertRepo {
 
     val entityClass: Class[CarAdvert] = classOf[CarAdvert]
 
-    override def findById(id: java.lang.Long): CarAdvert = {
+    override def findById(id: Long): CarAdvert = {
         jpaApi.withTransaction(() => {
             jpaApi.em().find(entityClass, id)
         })
@@ -26,7 +26,7 @@ class JPACarAdvertRepo @Inject()(jpaApi: JPAApi) extends CarAdvertRepo {
         })
     }
 
-    override def persist(entity: CarAdvert): java.lang.Long = {
+    override def persist(entity: CarAdvert): Long = {
         jpaApi.withTransaction(() => {
             jpaApi.em().persist(entity)
             entity.getId
@@ -39,7 +39,7 @@ class JPACarAdvertRepo @Inject()(jpaApi: JPAApi) extends CarAdvertRepo {
         })
     }
 
-    override def delete(id: java.lang.Long): Unit = {
+    override def delete(id: Long): Unit = {
         jpaApi.withTransaction(() => {
             jpaApi.em().remove(jpaApi.em().getReference(entityClass, id))
             null

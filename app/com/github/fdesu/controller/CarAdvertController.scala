@@ -20,7 +20,7 @@ class CarAdvertController @Inject()(cc: ControllerComponents,
   def allAdverts(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
     try {
       Ok(mapper.writeValueAsString(
-        repo.all().collect(Collectors.toList())
+        repo.all.collect(Collectors.toList())
       ))
     } catch {
       case e: Exception =>
