@@ -1,28 +1,28 @@
-## REST service built on top of Play! Framework
+## Car advert service
 
-Service has two parts:
+Service consists of two parts:
 * Incoming request processor
-* Data persistence layer using JPA
+* Data persistence layer with JPA
 
-### Run
+### Build & Run
 
-It should be enough to just run 
+To build and run the application it should be enough to just run 
 ```bash
 sbt run
 ``` 
-to build an application and run it. If build was successful `[info] p.c.s.AkkaHttpServer - Listening for HTTP on /0:0:0:0:0:0:0:0:9000` will appear.
+in case of success `[info] p.c.s.AkkaHttpServer - Listening for HTTP on /0:0:0:0:0:0:0:0:9000` will appear.
 
 ### Endpoints
 
-URL to endpoint mapping:
+URL-to-endpoint mapping:
 ```
-VERB    URL             DESCRIPTION
---------------------------------------------------
-GET     /v1/car/all     list all adverts
-GET     /v1/car/:id     fetch single advert by id
-POST    /v1/car/new     add new advert
-PUT     /v1/car/change  update existing advert
-DELETE  /v1/car/:id     delete advert by id
+HTTP VERB       URL                 DESCRIPTION
+---------------------------------------------------------------
+GET             /v1/car/all         list all adverts
+GET             /v1/car/:id         fetch single advert by id
+POST            /v1/car/new         add new advert
+PUT             /v1/car/change      update existing advert
+DELETE          /v1/car/:id         delete advert by id
 ```
 The most up-to-date mapping could be found at `conf/routes`
 
@@ -31,18 +31,18 @@ The most up-to-date mapping could be found at `conf/routes`
 
 #### Automated
 
-Automated testing is done using Play's `FakeApplication` with embedded `H2` database. As JPA being used, Database could be easily changed by using different `DataSource`.
+Automated testing is done using Play's `FakeApplication` facility with embedded `H2` database. As JPA being used Database could be easily changed by changing `DataSource`.
 
-Tests that could be found might be separated in 3 different categories:
+Tests could be divided into 3 different categories:
 * Unit (simple mocking/verification)
 * Integration (mostly persistence layer)
 * Acceptance (REST Api testing)
 
 ##### Sanity
 
-In order to verify application sanity, one need to start the application with `sbt run` and query endpoints. Below examples with `curl` could be found:
+In order to verify application sanity, one need to start the it (e.g. `sbt run`) and query appropriate endpoints. Below examples with `curl` could be found:
 
-###### persist new entity
+###### persist new entity example
 ```bash
 $ curl -i -H "Content-Type: application/json" -X POST -d '{"id":333,"title":"A","fuel":"GASOLINE","price":123,"new":true,"mileage":0,"registrationDate":"2019-01-25"}' http://localhost:9000/v1/car/new
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
@@ -62,7 +62,7 @@ Content-Length: 8
 {"id":1}
 ```
 
-###### fetch by id that is known from the previous call
+###### fetch by id example
 ```bash
 $ curl -i -X GET http://localhost:9000/v1/car/1
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
@@ -82,7 +82,7 @@ Content-Length: 105
 {"id":1,"title":"A","fuel":"GASOLINE","price":123,"new":true,"mileage":0,"registrationDate":"2019-01-25"}
 ```
 
-###### an example of endpoint declining request if `Content-Type` != `[applciation|text]/json`
+###### an example of endpoint declining request when `Content-Type` != `[applciation|text]/json`
 ```bash
 $ curl -i -X POST -d '{"field":"whatever"}' http://localhost:9000/v1/car/new
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
